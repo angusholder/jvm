@@ -289,6 +289,7 @@ class Interpreter(
             o.ifgt -> branchIfI { it > 0 }
             o.ifle -> branchIfI { it <= 0 }
             o.iflt -> branchIfI { it < 0 }
+            o.ifne -> branchIfI { it != 0 }
 
             o.if_icmpeq -> branchIfI2 { a, b -> a == b }
             o.if_icmpge -> branchIfI2 { a, b -> a >= b }
@@ -323,6 +324,29 @@ class Interpreter(
                 val a = popl()
                 val b = popl()
                 pushi(a.compareTo(b))
+            }
+
+            o.nop -> {}
+
+            o.pop -> {
+                require(stackTop >= 1)
+                stackTop -= 1
+            }
+
+            o.pop2 -> {
+                require(stackTop >= 2)
+                stackTop -= 2
+            }
+
+            o.swap -> {
+                val a = popi()
+                val b = popi()
+                pushi(a)
+                pushi(b)
+            }
+
+            o.dup -> {
+                pushi(stack[stackTop - 1])
             }
 
         }
