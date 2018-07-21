@@ -52,7 +52,8 @@ object Opcodes {
 
     // 2: indexbyte1, indexbyte2
     // count → arrayref
-    // create a new array of references of length count and component type identified by the class reference index (indexbyte1 << 8 + indexbyte2) in the constant pool
+    // create a new array of references of length count and component type identified by the class reference index
+    // (indexbyte1 << 8 + indexbyte2) in the constant pool
     const val anewarray = 0xbd
 
     // objectref → [empty]
@@ -85,7 +86,8 @@ object Opcodes {
     const val astore_3 = 0x4e
 
     // objectref → [empty], objectref
-    // throws an error or exception (notice that the rest of the stack is cleared, leaving only a reference to the Throwable)
+    // throws an error or exception (notice that the rest of the stack is cleared, leaving only a reference to the
+    // Throwable)
     const val athrow = 0xbf
 
     // arrayref, index → value
@@ -115,7 +117,8 @@ object Opcodes {
 
     // 2: indexbyte1, indexbyte2
     // objectref → objectref
-    // checks whether an objectref is of a certain type, the class reference of which is in the constant pool at index (indexbyte1 << 8 + indexbyte2)
+    // checks whether an objectref is of a certain type, the class reference of which is in the constant pool at index
+    // (indexbyte1 << 8 + indexbyte2)
     const val checkcast = 0xc0
 
     // value → result
@@ -229,15 +232,18 @@ object Opcodes {
     const val dup = 0x59
 
     // value2, value1 → value1, value2, value1
-    // insert a copy of the top value into the stack two values from the top. value1 and value2 must not be of the type double or long.
+    // insert a copy of the top value into the stack two values from the top. value1 and value2 must not be of the type
+    // double or long.
     const val dup_x1 = 0x5a
 
     // value3, value2, value1 → value1, value3, value2, value1
-    // insert a copy of the top value into the stack two (if value2 is double or long it takes up the entry of value3, too) or three values (if value2 is neither double nor long) from the top
+    // insert a copy of the top value into the stack two (if value2 is double or long it takes up the entry of value3,
+    // too) or three values (if value2 is neither double nor long) from the top
     const val dup_x2 = 0x5b
 
     // {value2, value1} → {value2, value1}, {value2, value1}
-    // duplicate top two stack words (two values, if value1 is not double nor long; a single value, if value1 is double or long)
+    // duplicate top two stack words (two values, if value1 is not double nor long; a single value, if value1 is double
+    // or long)
     const val dup2 = 0x5c
 
     // value3, {value2, value1} → {value2, value1}, value3, {value2, value1}
@@ -360,22 +366,26 @@ object Opcodes {
 
     // 2: indexbyte1, indexbyte2
     // objectref → value
-    // get a field value of an object objectref, where the field is identified by field reference in the constant pool index (indexbyte1 << 8 + indexbyte2)
+    // get a field value of an object objectref, where the field is identified by field reference in the constant pool
+    // index (indexbyte1 << 8 + indexbyte2)
     const val getfield = 0xb4
 
     // 2: indexbyte1, indexbyte2
     // → value
-    // get a static field value of a class, where the field is identified by field reference in the constant pool index (indexbyte1 << 8 + indexbyte2)
+    // get a static field value of a class, where the field is identified by field reference in the constant pool index
+    // (indexbyte1 << 8 + indexbyte2)
     const val getstatic = 0xb2
 
     // 2: branchbyte1, branchbyte2
     // [no change]
-    // goes to another instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // goes to another instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 +
+    // branchbyte2)
     const val goto = 0xa7
 
     // 4: branchbyte1, branchbyte2, branchbyte3, branchbyte4
     // [no change]
-    // goes to another instruction at branchoffset (signed int constructed from unsigned bytes branchbyte1 << 24 + branchbyte2 << 16 + branchbyte3 << 8 + branchbyte4)
+    // goes to another instruction at branchoffset (signed int constructed from unsigned bytes branchbyte1 << 24 +
+    // branchbyte2 << 16 + branchbyte3 << 8 + branchbyte4)
     const val goto_w = 0xc8
 
     // value → result
@@ -452,82 +462,98 @@ object Opcodes {
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if references are equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if references are equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val if_acmpeq = 0xa5
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if references are not equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if references are not equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val if_acmpne = 0xa6
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if ints are equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if ints are equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val if_icmpeq = 0x9f
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if value1 is greater than or equal to value2, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value1 is greater than or equal to value2, branch to instruction at branchoffset (signed short constructed
+    // from unsigned bytes branchbyte1 << 8 + branchbyte2)
     const val if_icmpge = 0xa2
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if value1 is greater than value2, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value1 is greater than value2, branch to instruction at branchoffset (signed short constructed from unsigned
+    // bytes branchbyte1 << 8 + branchbyte2)
     const val if_icmpgt = 0xa3
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if value1 is less than or equal to value2, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value1 is less than or equal to value2, branch to instruction at branchoffset (signed short constructed from
+    // unsigned bytes branchbyte1 << 8 + branchbyte2)
     const val if_icmple = 0xa4
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if value1 is less than value2, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value1 is less than value2, branch to instruction at branchoffset (signed short constructed from unsigned
+    // bytes branchbyte1 << 8 + branchbyte2)
     const val if_icmplt = 0xa1
 
     // 2: branchbyte1, branchbyte2
     // value1, value2 →
-    // if ints are not equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if ints are not equal, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val if_icmpne = 0xa0
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val ifeq = 0x99
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is greater than or equal to 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is greater than or equal to 0, branch to instruction at branchoffset (signed short constructed from
+    // unsigned bytes branchbyte1 << 8 + branchbyte2)
     const val ifge = 0x9c
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is greater than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is greater than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val ifgt = 0x9d
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is less than or equal to 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is less than or equal to 0, branch to instruction at branchoffset (signed short constructed from
+    // unsigned bytes branchbyte1 << 8 + branchbyte2)
     const val ifle = 0x9e
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is less than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is less than 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val iflt = 0x9b
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is not 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is not 0, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val ifne = 0x9a
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is not null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is not null, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val ifnonnull = 0xc7
 
     // 2: branchbyte1, branchbyte2
     // value →
-    // if value is null, branch to instruction at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // if value is null, branch to instruction at branchoffset (signed short constructed from unsigned bytes
+    // branchbyte1 << 8 + branchbyte2)
     const val ifnull = 0xc6
 
     // 2: index, const
@@ -574,32 +600,38 @@ object Opcodes {
 
     // 2: indexbyte1, indexbyte2
     // objectref → result
-    // determines if an object objectref is of a given type, identified by class reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // determines if an object objectref is of a given type, identified by class reference index in constant pool
+    // (indexbyte1 << 8 + indexbyte2)
     const val instanceof = 0xc1
 
     // 4: indexbyte1, indexbyte2, 0, 0
     // [arg1, [arg2 ...]] → result
-    // invokes a dynamic method and puts the result on the stack (might be void); the method is identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // invokes a dynamic method and puts the result on the stack (might be void); the method is identified by method
+    // reference index in constant pool (indexbyte1 << 8 + indexbyte2)
     const val invokedynamic = 0xba
 
     // 4: indexbyte1, indexbyte2, count, 0
     // objectref, [arg1, arg2, ...] → result
-    // invokes an interface method on object objectref and puts the result on the stack (might be void); the interface method is identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // invokes an interface method on object objectref and puts the result on the stack (might be void); the interface
+    // method is identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
     const val invokeinterface = 0xb9
 
     // 2: indexbyte1, indexbyte2
     // objectref, [arg1, arg2, ...] → result
-    // invoke instance method on object objectref and puts the result on the stack (might be void); the method is identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // invoke instance method on object objectref and puts the result on the stack (might be void); the method is
+    // identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
     const val invokespecial = 0xb7
 
     // 2: indexbyte1, indexbyte2
     // [arg1, arg2, ...] → result
-    // invoke a static method and puts the result on the stack (might be void); the method is identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // invoke a static method and puts the result on the stack (might be void); the method is identified by method
+    // reference index in constant pool (indexbyte1 << 8 + indexbyte2)
     const val invokestatic = 0xb8
 
     // 2: indexbyte1, indexbyte2
     // objectref, [arg1, arg2, ...] → result
-    // invoke virtual method on object objectref and puts the result on the stack (might be void); the method is identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // invoke virtual method on object objectref and puts the result on the stack (might be void); the method is
+    // identified by method reference index in constant pool (indexbyte1 << 8 + indexbyte2)
     const val invokevirtual = 0xb6
 
     // value1, value2 → result
@@ -657,12 +689,14 @@ object Opcodes {
 
     // 2: branchbyte1, branchbyte2
     // → address
-    // jump to subroutine at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2) and place the return address on the stack
+    // jump to subroutine at branchoffset (signed short constructed from unsigned bytes branchbyte1 << 8 + branchbyte2)
+    // and place the return address on the stack
     const val jsr = 0xa8
 
     // 4: branchbyte1, branchbyte2, branchbyte3, branchbyte4
     // → address
-    // jump to subroutine at branchoffset (signed int constructed from unsigned bytes branchbyte1 << 24 + branchbyte2 << 16 + branchbyte3 << 8 + branchbyte4) and place the return address on the stack
+    // jump to subroutine at branchoffset (signed int constructed from unsigned bytes branchbyte1 << 24 +
+    // branchbyte2 << 16 + branchbyte3 << 8 + branchbyte4) and place the return address on the stack
     const val jsr_w = 0xc9
 
     // value → result
@@ -707,17 +741,20 @@ object Opcodes {
 
     // 1: index
     // → value
-    // push a constant #index from a constant pool (String, int, float, Class, java.lang.invoke.MethodType, or java.lang.invoke.MethodHandle) onto the stack
+    // push a constant #index from a constant pool (String, int, float, Class, java.lang.invoke.MethodType, or
+    // java.lang.invoke.MethodHandle) onto the stack
     const val ldc = 0x12
 
     // 2: indexbyte1, indexbyte2
     // → value
-    // push a constant #index from a constant pool (String, int, float, Class, java.lang.invoke.MethodType, or java.lang.invoke.MethodHandle) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2)
+    // push a constant #index from a constant pool (String, int, float, Class, java.lang.invoke.MethodType, or
+    // java.lang.invoke.MethodHandle) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2)
     const val ldc_w = 0x13
 
     // 2: indexbyte1, indexbyte2
     // → value
-    // push a constant #index from a constant pool (double or long) onto the stack (wide index is constructed as indexbyte1 << 8 + indexbyte2)
+    // push a constant #index from a constant pool (double or long) onto the stack (wide index is constructed as
+    // indexbyte1 << 8 + indexbyte2)
     const val ldc2_w = 0x14
 
     // value1, value2 → result
@@ -753,9 +790,13 @@ object Opcodes {
     // negate a long
     const val lneg = 0x75
 
-    // 8+: <0–3 bytes padding>, defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, npairs1, npairs2, npairs3, npairs4, match-offset pairs...
+    // 8+: <0–3 bytes padding>,
+    // defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4,
+    // npairs1, npairs2, npairs3, npairs4,
+    // match-offset pairs...
     // key →
-    // a target address is looked up from a table using a key and execution continues from the instruction at that address
+    // a target address is looked up from a table using a key and execution continues from the instruction at that
+    // address
     const val lookupswitch = 0xab
 
     // value1, value2 → result
@@ -821,7 +862,8 @@ object Opcodes {
 
     // 3: indexbyte1, indexbyte2, dimensions
     // count1, [count2,...] → arrayref
-    // create a new array of dimensions dimensions of type identified by class reference in constant pool index (indexbyte1 << 8 + indexbyte2); the sizes of each dimension is identified by count1, [count2, etc.]
+    // create a new array of dimensions dimensions of type identified by class reference in constant pool index
+    // (indexbyte1 << 8 + indexbyte2); the sizes of each dimension is identified by count1, [count2, etc.]
     const val multianewarray = 0xc5
 
     // 2: indexbyte1, indexbyte2
@@ -848,12 +890,14 @@ object Opcodes {
 
     // 2: indexbyte1, indexbyte2
     // objectref, value →
-    // set field to value in an object objectref, where the field is identified by a field reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // set field to value in an object objectref, where the field is identified by a field reference index in constant
+    // pool (indexbyte1 << 8 + indexbyte2)
     const val putfield = 0xb5
 
     // 2: indexbyte1, indexbyte2
     // value →
-    // set static field to value in a class, where the field is identified by a field reference index in constant pool (indexbyte1 << 8 + indexbyte2)
+    // set static field to value in a class, where the field is identified by a field reference index in constant pool
+    // (indexbyte1 << 8 + indexbyte2)
     const val putstatic = 0xb3
 
     // 1: index
@@ -882,14 +926,20 @@ object Opcodes {
     // swaps two top words on the stack (note that value1 and value2 must not be double or long)
     const val swap = 0x5f
 
-    // 16+: [0–3 bytes padding], defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4, lowbyte1, lowbyte2, lowbyte3, lowbyte4, highbyte1, highbyte2, highbyte3, highbyte4, jump offsets...
+    // 16+: [0–3 bytes padding],
+    // defaultbyte1, defaultbyte2, defaultbyte3, defaultbyte4,
+    // lowbyte1, lowbyte2, lowbyte3, lowbyte4,
+    // highbyte1, highbyte2, highbyte3, highbyte4,
+    // jump offsets...
     // index →
     // continue execution from an address in the table at offset index
     const val tableswitch = 0xaa
 
     // 3/5: opcode, indexbyte1, indexbyte2or iinc, indexbyte1, indexbyte2, countbyte1, countbyte2
     // [same as for corresponding instructions]
-    // execute opcode, where opcode is either iload, fload, aload, lload, dload, istore, fstore, astore, lstore, dstore, or ret, but assume the index is 16 bit; or execute iinc, where the index is 16 bits and the constant to increment by is a signed 16 bit short
+    // execute opcode, where opcode is either iload, fload, aload, lload, dload, istore, fstore, astore, lstore, dstore,
+    // or ret, but assume the index is 16 bit; or execute iinc, where the index is 16 bits and the constant to increment
+    // by is a signed 16 bit short
     const val wide = 0xc4
 
     //
