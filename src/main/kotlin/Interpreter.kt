@@ -4,19 +4,19 @@ import Opcodes as o
 
 class Interpreter(
         private val bytecode: ByteArray,
-        private val stackSize: Int,
+        private val valueStackSize: Int,
         private val localsCount: Int
 ) {
-    private val stack = IntArray(stackSize)
-    private var stackTop = 0
+    private val valueStack = IntArray(valueStackSize)
+    private var valueStackTop = 0
     private val locals = LongArray(localsCount)
     private var offset = 0
     private var wide = false
 
     fun pushi(i: Int) {
-        stack[stackTop++] = i
+        valueStack[valueStackTop++] = i
     }
-    fun popi() = stack[--stackTop]
+    fun popi() = valueStack[--valueStackTop]
     fun pushl(l: Long) {
         pushi(l.toInt())
         pushi((l ushr 32).toInt())
@@ -329,13 +329,13 @@ class Interpreter(
             o.nop -> {}
 
             o.pop -> {
-                require(stackTop >= 1)
-                stackTop -= 1
+                require(valueStackTop >= 1)
+                valueStackTop -= 1
             }
 
             o.pop2 -> {
-                require(stackTop >= 2)
-                stackTop -= 2
+                require(valueStackTop >= 2)
+                valueStackTop -= 2
             }
 
             o.swap -> {
@@ -346,7 +346,7 @@ class Interpreter(
             }
 
             o.dup -> {
-                pushi(stack[stackTop - 1])
+                pushi(valueStack[valueStackTop - 1])
             }
 
         }
