@@ -2,6 +2,10 @@ import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 import Opcodes as o
 
+data class CallFrame (
+        val valueStackTopOnEntry: Int
+)
+
 class Interpreter(
         private val bytecode: ByteArray,
         private val valueStackSize: Int,
@@ -265,6 +269,12 @@ class Interpreter(
             o.sastore -> arrayStore<Short>()
 
             o.wide -> {
+                require(when (bytecode[offset].toInt()) {
+                    o.iload, o.fload, o.aload, o.lload, o.dload,
+                    o.istore, o.fstore, o.astore, o.lstore, o.dstore,
+                    o.ret, o.iinc-> true
+                    else -> false
+                })
                 wide = true
                 interpret()
                 wide = false
