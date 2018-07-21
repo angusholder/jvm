@@ -80,6 +80,12 @@ class Interpreter(
         return (first shl 8) or second
     }
 
+    private fun readSInt(): Int {
+        val first = readUShort()
+        val second = readUShort()
+        return (first shl 16) or second
+    }
+
     private inline fun <reified T> loadLocalConstOffset(opcode: Int, base: Int) {
         loadLocal<T>(opcode - base)
     }
@@ -290,6 +296,13 @@ class Interpreter(
             o.ifle -> branchIfI { it <= 0 }
             o.iflt -> branchIfI { it < 0 }
             o.ifne -> branchIfI { it != 0 }
+
+            o.goto -> {
+                offset += readSShort()
+            }
+            o.goto_w -> {
+                offset += readSInt()
+            }
 
             o.if_icmpeq -> branchIfI2 { a, b -> a == b }
             o.if_icmpge -> branchIfI2 { a, b -> a >= b }
