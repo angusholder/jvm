@@ -252,6 +252,17 @@ class Interpreter(
             o.fstore -> storeLocalVarOffset<Float>()
             o.dstore -> storeLocalVarOffset<Double>()
 
+            o.iinc -> {
+                val index = getOpcodeOffset()
+                val count = if (wide) {
+                    readSShort()
+                } else {
+                    readSByte()
+                }
+                val value = locals[index].toInt()
+                locals[index] = (value + count).toLong()
+            }
+
             o.baload -> arrayLoad<Byte>()
             o.caload -> arrayLoad<Char>()
             o.daload -> arrayLoad<Double>()
