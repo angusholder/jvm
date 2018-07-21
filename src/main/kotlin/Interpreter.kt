@@ -297,6 +297,34 @@ class Interpreter(
             o.if_icmplt -> branchIfI2 { a, b -> a < b }
             o.if_icmpne -> branchIfI2 { a, b -> a != b }
 
+            o.fcmpg -> {
+                val a = popf()
+                val b = popf()
+                pushi(if (a.isNaN() || b.isNaN()) 1 else a.compareTo(b))
+            }
+            o.fcmpl -> {
+                val a = popf()
+                val b = popf()
+                pushi(if (a.isNaN() || b.isNaN()) -1 else a.compareTo(b))
+            }
+
+            o.dcmpg -> {
+                val a = popd()
+                val b = popd()
+                pushi(if (a.isNaN() || b.isNaN()) 1 else a.compareTo(b))
+            }
+            o.dcmpl -> {
+                val a = popd()
+                val b = popd()
+                pushi(if (a.isNaN() || b.isNaN()) -1 else a.compareTo(b))
+            }
+
+            o.lcmp -> {
+                val a = popl()
+                val b = popl()
+                pushi(a.compareTo(b))
+            }
+
         }
     }
 }
