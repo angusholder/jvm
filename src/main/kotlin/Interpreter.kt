@@ -181,6 +181,13 @@ class Interpreter(
             o.dconst_0 -> pushd(0.0)
             o.dconst_1 -> pushd(1.0)
 
+            o.bipush -> {
+                pushi(readSByte())
+            }
+            o.sipush -> {
+                pushi(readSShort())
+            }
+
             o.iadd -> op2<Int> { a, b -> a + b }
             o.isub -> op2<Int> { a, b -> a - b }
             o.imul -> op2<Int> { a, b -> a * b }
