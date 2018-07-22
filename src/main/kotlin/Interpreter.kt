@@ -390,6 +390,10 @@ class Interpreter(
                 pushi(valueStack[valueStackTop - 1])
             }
 
+            // This instruction is the reason the constant pool can contain java.lang.invoke.MethodType and
+            // java.lang.invoke.MethodHandle
+            o.invokedynamic -> throw NotImplementedError()
+
         }
     }
 }
