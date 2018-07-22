@@ -36,37 +36,32 @@ class Interpreter(
     fun pushd(d: Double) = pushl(d.toRawBits())
     fun popd(): Double = Double.fromBits(popl())
 
-    inline fun <reified T> pop(): T {
-        return when (T::class) {
-            Int::class -> popi() as T
-            Long::class -> popl() as T
-            Float::class -> popf() as T
-            Double::class -> popd() as T
-            else -> throw IllegalStateException()
-        }
-    }
-
-    inline fun <reified T> push(t: T) {
-        when (T::class) {
-            Int::class -> pushi(t as Int)
-            Long::class -> pushl(t as Long)
-            Float::class -> pushf(t as Float)
-            Double::class -> pushd(t as Double)
-            else -> throw IllegalStateException()
-        }
-    }
-
-    inline fun <reified T> op1(action: (T) -> T) {
-        val a = pop<T>()
-        val result = action(a)
-        push(result)
-    }
-
-    inline fun <reified T> op2(action: (T, T) -> T) {
-        val a = pop<T>()
-        val b = pop<T>()
+    inline fun op2I(action: (Int, Int) -> Int) {
+        val a = popi()
+        val b = popi()
         val result = action(a, b)
-        push(result)
+        pushi(result)
+    }
+
+    inline fun op2L(action: (Long, Long) -> Long) {
+        val a = popl()
+        val b = popl()
+        val result = action(a, b)
+        pushl(result)
+    }
+
+    inline fun op2F(action: (Float, Float) -> Float) {
+        val a = popf()
+        val b = popf()
+        val result = action(a, b)
+        pushf(result)
+    }
+
+    inline fun op2D(action: (Double, Double) -> Double) {
+        val a = popd()
+        val b = popd()
+        val result = action(a, b)
+        pushd(result)
     }
 
     private fun readUByte(): Int = bytecode[offset++].toInt() and 0xFF
@@ -90,14 +85,6 @@ class Interpreter(
         return (first shl 16) or second
     }
 
-    private inline fun <reified T> loadLocalConstOffset(opcode: Int, base: Int) {
-        loadLocal<T>(opcode - base)
-    }
-
-    private inline fun <reified T> storeLocalConstOffset(opcode: Int, base: Int) {
-        storeLocal<T>(opcode - base)
-    }
-
     private fun getOpcodeOffset(): Int {
         return if (wide) {
             readUShort()
@@ -106,45 +93,15 @@ class Interpreter(
         }
     }
 
-    private inline fun <reified T> loadLocalVarOffset() {
-        val offset = getOpcodeOffset()
-        loadLocal<T>(offset)
-    }
+    private fun loadLocalI(offset: Int) { pushi(locals[offset].toInt()) }
+    private fun loadLocalL(offset: Int) { pushl(locals[offset]) }
+    private fun loadLocalF(offset: Int) { pushf(Float.fromBits(locals[offset].toInt())) }
+    private fun loadLocalD(offset: Int) { pushd(Double.fromBits(locals[offset])) }
 
-    private inline fun <reified T> storeLocalVarOffset() {
-        val offset = getOpcodeOffset()
-        storeLocal<T>(offset)
-    }
-
-    private inline fun <reified T> loadLocal(offset: Int) {
-        val t: T = when (T::class) {
-            Int::class -> locals[offset].toInt() as T
-            Long::class -> locals[offset] as T
-            Float::class -> Float.fromBits(locals[offset].toInt()) as T
-            Double::class -> Double.fromBits(locals[offset]) as T
-            else -> throw IllegalStateException()
-        }
-        push(t)
-    }
-
-    private inline fun <reified T> storeLocal(offset: Int) {
-        val t: T = pop()
-        when (T::class) {
-            Int::class -> {
-                locals[offset] = (t as Int).toLong()
-            }
-            Long::class -> {
-                locals[offset] = t as Long
-            }
-            Float::class -> {
-                locals[offset] = (t as Float).toRawBits().toLong() // TODO: Check it doesn't sign extend?
-            }
-            Double::class -> {
-                locals[offset] = (t as Double).toRawBits()
-            }
-            else -> throw IllegalStateException()
-        }
-    }
+    private fun storeLocalI(offset: Int) { locals[offset] = popi().toLong() }
+    private fun storeLocalL(offset: Int) { locals[offset] = popl() }
+    private fun storeLocalF(offset: Int) { locals[offset] = popf().toRawBits().toLong() }
+    private fun storeLocalD(offset: Int) { locals[offset] = popd().toRawBits() }
 
     private inline fun <reified T> arrayLoad(): Unit = TODO()
 
@@ -192,65 +149,65 @@ class Interpreter(
                 pushi(readSShort())
             }
 
-            o.iadd -> op2<Int> { a, b -> a + b }
-            o.isub -> op2<Int> { a, b -> a - b }
-            o.imul -> op2<Int> { a, b -> a * b }
-            o.idiv -> op2<Int> { a, b -> a / b }
-            o.irem -> op2<Int> { a, b -> a % b }
-            o.ineg -> op1<Int> { a -> -a }
-            o.iand -> op2<Int> { a, b -> a and b }
-            o.ior -> op2<Int> { a, b -> a or b }
-            o.ixor -> op2<Int> { a, b -> a xor b }
-            o.ishl -> op2<Int> { a, b -> a shl b }
-            o.ishr -> op2<Int> { a, b -> a shr b }
-            o.iushr -> op2<Int> { a, b -> a ushr b }
+            o.iadd -> op2I { a, b -> a + b }
+            o.isub -> op2I { a, b -> a - b }
+            o.imul -> op2I { a, b -> a * b }
+            o.idiv -> op2I { a, b -> a / b }
+            o.irem -> op2I { a, b -> a % b }
+            o.ineg -> pushi(-popi())
+            o.iand -> op2I { a, b -> a and b }
+            o.ior -> op2I { a, b -> a or b }
+            o.ixor -> op2I { a, b -> a xor b }
+            o.ishl -> op2I { a, b -> a shl b }
+            o.ishr -> op2I { a, b -> a shr b }
+            o.iushr -> op2I { a, b -> a ushr b }
 
-            o.ladd -> op2<Long> { a, b -> a + b }
-            o.lsub -> op2<Long> { a, b -> a - b }
-            o.lmul -> op2<Long> { a, b -> a * b }
-            o.ldiv -> op2<Long> { a, b -> a / b }
-            o.lrem -> op2<Long> { a, b -> a % b }
-            o.lneg -> op1<Long> { a -> -a }
-            o.land -> op2<Long> { a, b -> a and b }
-            o.lor -> op2<Long> { a, b -> a or b }
-            o.lxor -> op2<Long> { a, b -> a xor b }
-            o.lshl -> op2<Long> { a, b -> a shl b.toInt() }
-            o.lshr -> op2<Long> { a, b -> a shr b.toInt() }
-            o.lushr -> op2<Long> { a, b -> a ushr b.toInt() }
+            o.ladd -> op2L { a, b -> a + b }
+            o.lsub -> op2L { a, b -> a - b }
+            o.lmul -> op2L { a, b -> a * b }
+            o.ldiv -> op2L { a, b -> a / b }
+            o.lrem -> op2L { a, b -> a % b }
+            o.lneg -> pushl(-popl())
+            o.land -> op2L { a, b -> a and b }
+            o.lor -> op2L { a, b -> a or b }
+            o.lxor -> op2L { a, b -> a xor b }
+            o.lshl -> op2L { a, b -> a shl b.toInt() }
+            o.lshr -> op2L { a, b -> a shr b.toInt() }
+            o.lushr -> op2L { a, b -> a ushr b.toInt() }
 
-            o.fadd -> op2<Float> { a, b -> a + b }
-            o.fsub -> op2<Float> { a, b -> a - b }
-            o.fmul -> op2<Float> { a, b -> a * b }
-            o.fdiv -> op2<Float> { a, b -> a / b }
-            o.frem -> op2<Float> { a, b -> a % b }
-            o.fneg -> op1<Float> { a -> -a }
+            o.fadd -> op2F { a, b -> a + b }
+            o.fsub -> op2F { a, b -> a - b }
+            o.fmul -> op2F { a, b -> a * b }
+            o.fdiv -> op2F { a, b -> a / b }
+            o.frem -> op2F { a, b -> a % b }
+            o.fneg -> pushf(-popf())
 
-            o.dadd -> op2<Double> { a, b -> a + b }
-            o.dsub -> op2<Double> { a, b -> a - b }
-            o.dmul -> op2<Double> { a, b -> a * b }
-            o.ddiv -> op2<Double> { a, b -> a / b }
-            o.drem -> op2<Double> { a, b -> a % b }
-            o.dneg -> op1<Double> { a -> -a }
+            o.dadd -> op2D { a, b -> a + b }
+            o.dsub -> op2D { a, b -> a - b }
+            o.dmul -> op2D { a, b -> a * b }
+            o.ddiv -> op2D { a, b -> a / b }
+            o.drem -> op2D { a, b -> a % b }
+            o.dneg -> pushd(-popd())
 
-            o.iload_0, o.iload_1, o.iload_2, o.iload_3 -> loadLocalConstOffset<Int>(opcode, o.iload_0)
-            o.lload_0, o.lload_1, o.lload_2, o.lload_3 -> loadLocalConstOffset<Long>(opcode, o.lload_0)
-            o.fload_0, o.fload_1, o.fload_2, o.fload_3 -> loadLocalConstOffset<Float>(opcode, o.fload_0)
-            o.dload_0, o.dload_1, o.dload_2, o.dload_3 -> loadLocalConstOffset<Double>(opcode, o.dload_0)
+            o.iload_0, o.iload_1, o.iload_2, o.iload_3 -> loadLocalI(opcode - o.iload_0)
+            o.lload_0, o.lload_1, o.lload_2, o.lload_3 -> loadLocalL(opcode - o.lload_0)
+            o.fload_0, o.fload_1, o.fload_2, o.fload_3 -> loadLocalF(opcode - o.fload_0)
+            o.dload_0, o.dload_1, o.dload_2, o.dload_3 -> loadLocalD(opcode - o.dload_0)
 
-            o.istore_0, o.istore_1, o.istore_2, o.istore_3 -> storeLocalConstOffset<Int>(opcode, o.iload_0)
-            o.lstore_0, o.lstore_1, o.lstore_2, o.lstore_3 -> storeLocalConstOffset<Long>(opcode, o.lload_0)
-            o.fstore_0, o.fstore_1, o.fstore_2, o.fstore_3 -> storeLocalConstOffset<Float>(opcode, o.fload_0)
-            o.dstore_0, o.dstore_1, o.dstore_2, o.dstore_3 -> storeLocalConstOffset<Double>(opcode, o.dload_0)
+            o.istore_0, o.istore_1, o.istore_2, o.istore_3 -> storeLocalI(opcode - o.iload_0)
+            o.lstore_0, o.lstore_1, o.lstore_2, o.lstore_3 -> storeLocalL(opcode - o.lload_0)
+            o.fstore_0, o.fstore_1, o.fstore_2, o.fstore_3 -> storeLocalF(opcode - o.fload_0)
+            o.dstore_0, o.dstore_1, o.dstore_2, o.dstore_3 -> storeLocalD(opcode - o.dload_0)
 
-            o.iload -> loadLocalVarOffset<Int>()
-            o.lload -> loadLocalVarOffset<Long>()
-            o.fload -> loadLocalVarOffset<Float>()
-            o.dload -> loadLocalVarOffset<Double>()
+            o.iload -> loadLocalI(getOpcodeOffset())
+            o.lload -> loadLocalL(getOpcodeOffset())
+            o.fload -> loadLocalF(getOpcodeOffset())
+            o.dload -> loadLocalD(getOpcodeOffset())
 
-            o.istore -> storeLocalVarOffset<Int>()
-            o.lstore -> storeLocalVarOffset<Long>()
-            o.fstore -> storeLocalVarOffset<Float>()
-            o.dstore -> storeLocalVarOffset<Double>()
+            o.istore -> storeLocalI(getOpcodeOffset())
+            o.lstore -> storeLocalL(getOpcodeOffset())
+            o.fstore -> storeLocalF(getOpcodeOffset())
+            o.dstore -> storeLocalD(getOpcodeOffset())
 
             o.iinc -> {
                 val index = getOpcodeOffset()
