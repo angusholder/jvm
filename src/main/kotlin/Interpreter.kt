@@ -367,7 +367,7 @@ class Interpreter(
                 pushi(a.compareTo(b))
             }
 
-            o.nop -> {}
+            o.nop, o.impdep1, o.impdep2, o.breakpoint -> {}
 
             o.pop -> {
                 require(valueStackTop >= 1)
