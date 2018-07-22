@@ -194,10 +194,10 @@ class Interpreter(
             o.fload_0, o.fload_1, o.fload_2, o.fload_3 -> loadLocalF(opcode - o.fload_0)
             o.dload_0, o.dload_1, o.dload_2, o.dload_3 -> loadLocalD(opcode - o.dload_0)
 
-            o.istore_0, o.istore_1, o.istore_2, o.istore_3 -> storeLocalI(opcode - o.iload_0)
-            o.lstore_0, o.lstore_1, o.lstore_2, o.lstore_3 -> storeLocalL(opcode - o.lload_0)
-            o.fstore_0, o.fstore_1, o.fstore_2, o.fstore_3 -> storeLocalF(opcode - o.fload_0)
-            o.dstore_0, o.dstore_1, o.dstore_2, o.dstore_3 -> storeLocalD(opcode - o.dload_0)
+            o.istore_0, o.istore_1, o.istore_2, o.istore_3 -> storeLocalI(opcode - o.istore_0)
+            o.lstore_0, o.lstore_1, o.lstore_2, o.lstore_3 -> storeLocalL(opcode - o.lstore_0)
+            o.fstore_0, o.fstore_1, o.fstore_2, o.fstore_3 -> storeLocalF(opcode - o.fstore_0)
+            o.dstore_0, o.dstore_1, o.dstore_2, o.dstore_3 -> storeLocalD(opcode - o.dstore_0)
 
             o.iload -> loadLocalI(getOpcodeOffset())
             o.lload -> loadLocalL(getOpcodeOffset())
